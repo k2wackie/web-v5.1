@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 
 function UserDetail() {
-  // useEffect(()=>{
-  //   fetch("")
-
-  // },[])
+  useEffect(() => {
+    fetch("");
+  }, []);
 
   return <div>UserDetail</div>;
 }

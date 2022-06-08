@@ -6,8 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
-//@Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Transactional

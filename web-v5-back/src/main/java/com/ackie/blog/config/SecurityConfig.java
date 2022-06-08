@@ -32,8 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserRepository userRepository;
 
-//    private final JwtExceptionFilter jwtExceptionFilter;
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -53,8 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilter(corsFilter)  // @CrossOrigin(인증이없을때), 인증이 있을 때는 시큐리티필터에 등록해줘야 함
             .formLogin().disable()
             .httpBasic().disable()
-//            .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
-            .addFilter(new JwtAuthenticationFilter(authenticationManager()))  //AuthenticationManager던저줘야..
+            .addFilter(new JwtAuthenticationFilter(authenticationManager()))
             .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
             .authorizeRequests()
             .antMatchers("/", "/login", "/api/user/register", "/logout").permitAll()
@@ -72,7 +69,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://jolly-kangaroo-87.loca.lt/"));
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");

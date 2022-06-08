@@ -2,19 +2,16 @@ package com.ackie.blog.controller;
 
 import com.ackie.blog.config.jwt.JwtProperties;
 import com.ackie.blog.model.Board;
-import com.ackie.blog.model.User;
 import com.ackie.blog.repository.BoardRepository;
 import com.ackie.blog.service.BoardService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-//@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class BoardController {

@@ -1,16 +1,12 @@
 package com.ackie.blog.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity(name = "user")
@@ -20,7 +16,6 @@ import java.util.List;
 @Builder // 빌더패턴
 @DynamicInsert
 @DynamicUpdate
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
 
     @Id

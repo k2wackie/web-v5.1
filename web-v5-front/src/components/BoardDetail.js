@@ -6,12 +6,12 @@ function BoardDetail() {
   const [data, setData] = useState([]);
   const [mode, setMode] = useState("read");
   const [isUser, setIsUser] = useState("notUser");
+  const [reply, setReply] = useState([]);
 
   const navigate = useNavigate();
 
   const id = useParams().id;
 
-  // console.log(data.user);
   const username = data.user === undefined || null ? "" : data.user.username;
 
   useEffect(() => {
@@ -27,7 +27,7 @@ function BoardDetail() {
           window.location.href = "/login";
         }
         setData(newData);
-        // console.log(newData);
+        setReply(newData.replies);
       });
   }, [id, navigate]);
 
@@ -40,17 +40,6 @@ function BoardDetail() {
     if (decodeUser.username === username || decodeUser.username === "admin") {
       setIsUser("isUser");
     }
-    // if (user) {
-    //   try {
-    //     const { exp } = jwt_decode(user);
-    //     if (Date.now() >= exp * 1000) {
-    //       window.localStorage.removeItem('user');
-    //     } else {
-    //     }
-    //   } catch (e) {
-    //     window.localStorage.removeItem('user');
-    //   }
-    // }
   }, [username]);
 
   const modeChange = (e) => {
@@ -72,26 +61,8 @@ function BoardDetail() {
           setMode("read");
         })
         .catch((err) => console.log(err));
-
-      // return setMode("read");
     }
   };
-
-  // const deleteBoard = (e) => {
-  // e.preventDefault();
-  //   fetch(`/api/board/${id}`, {
-  //     method: "DELETE",
-  //     headers: {
-  //       Authorization: localStorage.getItem("Authorization"),
-  //     },
-  //   })
-  //     .then((res) => console.log("status: ", res.status))
-  //     .then(() => {
-  //       navigate("/board");
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
-  // console.log(data);
 
   const onChange = (e) => {
     setData({
@@ -116,8 +87,6 @@ function BoardDetail() {
         navigate("/board");
       })
       .catch((err) => console.log(err));
-
-    // return setMode("read");
   };
 
   const date = new Date(data.updateDateTime);
@@ -127,9 +96,10 @@ function BoardDetail() {
   const hours = date.getHours();
   const minutes = date.getMinutes();
 
-  // console.log("username: ", username);
-  // console.log("isUser: ", isUser);
-  // console.log(isUser === "isUser");
+  console.log(reply);
+  console.log(reply.length === 0);
+  console.log(reply.length === 0 ? "" : reply[1].user.username);
+
   return (
     <div>
       <div className="board-item">
@@ -142,14 +112,23 @@ function BoardDetail() {
             <div>
               작성시간: {year}년 {month}월 {day}일 {hours}시 {minutes}분
             </div>
+            <div>
+              댓글:
+              <div>
+                {reply.length === 0
+                  ? ""
+                  : reply.map((data, i) => (
+                      <div key={i}>
+                        <div>이름: {data.user.username}</div>
+                        <div>{data.content}</div>
+                      </div>
+                    ))}
+              </div>
+            </div>
           </>
         ) : (
           <>
             <div>글 id: {data.id}</div>
-            {/* <div>
-              <span>작성자</span>
-              <input name="author" value={username} onChange={onChange} />
-            </div> */}
             <div>
               <span>제목</span>
               <input name="title" value={data.title} onChange={onChange} />
@@ -157,6 +136,10 @@ function BoardDetail() {
             <div>
               <span>내용</span>
               <input name="content" value={data.content} onChange={onChange} />
+            </div>
+            <div>
+              <div>댓글 작성</div>
+              <input name="replies" value={data.replies} onChange={onChange} />
             </div>
           </>
         )}

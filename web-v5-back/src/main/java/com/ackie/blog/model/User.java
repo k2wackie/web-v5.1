@@ -36,6 +36,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Board> boards = new ArrayList<>();
-//    private List<Reply> replies = new ArrayList<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Reply> replies = new ArrayList<>();
 
 }

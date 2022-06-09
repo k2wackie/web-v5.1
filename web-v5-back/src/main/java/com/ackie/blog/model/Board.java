@@ -1,16 +1,23 @@
 package com.ackie.blog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "board")
 @Data
+@DynamicInsert
+@DynamicUpdate
 public class Board {
 
     @Id
@@ -29,8 +36,12 @@ public class Board {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade=CascadeType.REMOVE)
+
 //    @JsonIgnoreProperties({"board"})
 //    @OrderBy("id desc")
-//    private List<Reply> replies;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "board", cascade=CascadeType.REMOVE)
+//    @JsonIgnore
+    private List<Reply> replies = new ArrayList<>();
 }

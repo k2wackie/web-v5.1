@@ -38,7 +38,7 @@ function Nav() {
         ""
       ) : (
         <>
-          <Link to="/user/{id}">사용자 정보</Link>
+          <Link to="/user/detail">사용자 정보</Link>
           <button onClick={logout}>로그아웃</button>
           <div>
             <Link to="/board">글목록</Link>

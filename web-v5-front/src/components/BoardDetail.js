@@ -34,7 +34,6 @@ function BoardDetail() {
   useEffect(() => {
     const jwtHeader = window.localStorage.getItem("Authorization");
     // console.log(jwtHeader);
-
     const decodeUser = jwt_decode(jwtHeader);
     // console.log("decodeUser: ", decodeUser.username);
 

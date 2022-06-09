@@ -2,7 +2,6 @@ package com.ackie.blog.controller;
 
 import com.ackie.blog.config.jwt.JwtProperties;
 import com.ackie.blog.model.Board;
-import com.ackie.blog.repository.BoardRepository;
 import com.ackie.blog.service.BoardService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -17,14 +16,11 @@ import java.util.List;
 public class BoardController {
 
     @Autowired
-    private BoardRepository repository;
-
-    @Autowired
     private BoardService boardService;
 
     @GetMapping("/board")
-    public List<Board> all() {
-        return repository.findByIsdeleted(false);
+    public List<Board> findAll() {
+        return boardService.findAll();
     }
 
     @PostMapping("/board")
@@ -34,36 +30,24 @@ public class BoardController {
         return boardService.save(newBoard, username);
     }
 
-    @DeleteMapping("/board/{id}")
-    public void deleteBoard(@PathVariable Long id) {
-        repository.deleteById(id);
+    @GetMapping("/board/{id}")
+    public Board findOne(@PathVariable Long id) {
+        return boardService.fineOne(id);
     }
 
     @PutMapping("/board/{id}")
-    public Board replaceBoard(@RequestBody Board newBoard, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(board -> {
-                    board.setTitle(newBoard.getTitle());
-                    board.setContent(newBoard.getContent());
-                    return repository.save(board);
-                })
-                .orElseGet(() -> {
-                    newBoard.setId(id);
-                    return repository.save(newBoard);
-                });
+    public Board editBoard(@RequestBody Board newBoard, @PathVariable Long id) {
+        return boardService.editBoard(newBoard, id);
     }
 
     @PutMapping("/board/delete/{id}")
-    public Board isdeleteBoard(@RequestBody Board newBoard, @PathVariable Long id) {
-        newBoard.setId(id);
-        newBoard.setIsdeleted(true);
-        return repository.save(newBoard);
+    public Board isDeletedBoard(@RequestBody Board newBoard, @PathVariable Long id) {
+        return boardService.isDeletedBoard(newBoard, id);
     }
 
-    @GetMapping("/board/{id}")
-    Board one(@PathVariable Long id) {
-        return repository.findById(id).orElse(null);
+    @DeleteMapping("/board/delete/{id}")
+    public void deleteBoard(@PathVariable Long id) {
+        boardService.deleteBoard(id);
     }
 
 }

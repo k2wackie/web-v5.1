@@ -6,6 +6,7 @@ import org.hibernate.annotations.*;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +29,13 @@ public class User {
     private String password;
     private boolean enabled;
     private String role;
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Board> boards = new ArrayList<>();
-
+//    private List<Reply> replies = new ArrayList<>();
 
 }

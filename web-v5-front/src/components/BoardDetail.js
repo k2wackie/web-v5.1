@@ -4,9 +4,11 @@ import jwt_decode from "jwt-decode";
 
 function BoardDetail() {
   const [data, setData] = useState([]);
+  const [reply, setReply] = useState([]);
   const [mode, setMode] = useState("read");
   const [isUser, setIsUser] = useState("notUser");
-  const [reply, setReply] = useState([]);
+  const [newReply, setNewReply] = useState({ content: "" });
+  const [updata, setUpdate] = useState();
 
   const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ function BoardDetail() {
         setData(newData);
         setReply(newData.replies);
       });
-  }, [id, navigate]);
+  }, [id, updata]);
 
   useEffect(() => {
     const jwtHeader = window.localStorage.getItem("Authorization");
@@ -89,16 +91,42 @@ function BoardDetail() {
       .catch((err) => console.log(err));
   };
 
+  const replyOnChange = (e) => {
+    setNewReply({ [e.target.name]: e.target.value });
+  };
+
+  const replySave = (e) => {
+    e.preventDefault();
+
+    fetch(`/api/board/${id}/reply`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("Authorization"),
+      },
+      body: JSON.stringify(newReply),
+    })
+      .then((res) => {
+        console.log("status: ", res.status);
+        res.json();
+      })
+      .then((res) => {
+        console.log(reply);
+        setNewReply({ content: "" });
+        console.log(newReply);
+        setUpdate((n) => !n);
+        navigate(`/board/${id}`);
+      })
+      .catch((err) => console.log(err));
+    // navigate(`/board/${id}`);
+  };
+
   const date = new Date(data.updateDateTime);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const hours = date.getHours();
   const minutes = date.getMinutes();
-
-  console.log(reply);
-  console.log(reply.length === 0);
-  console.log(reply.length === 0 ? "" : reply[1].user.username);
 
   return (
     <div>
@@ -125,30 +153,47 @@ function BoardDetail() {
                     ))}
               </div>
             </div>
+            <br />
+            <div>
+              <input
+                type="text"
+                value={newReply.content}
+                name="content"
+                onChange={replyOnChange}
+              />
+              <button onClick={replySave}>댓글저장</button>
+            </div>
           </>
         ) : (
           <>
             <div>글 id: {data.id}</div>
             <div>
               <span>제목</span>
-              <input name="title" value={data.title} onChange={onChange} />
+              <input
+                type="text"
+                name="title"
+                value={data.title}
+                onChange={onChange}
+              />
             </div>
             <div>
               <span>내용</span>
-              <input name="content" value={data.content} onChange={onChange} />
-            </div>
-            <div>
-              <div>댓글 작성</div>
-              <input name="replies" value={data.replies} onChange={onChange} />
+              <input
+                type="text"
+                name="content"
+                value={data.content}
+                onChange={onChange}
+              />
             </div>
           </>
         )}
         <br />
+
         {isUser === "isUser" ? (
-          <>
+          <div>
             <button onClick={modeChange}>수정</button>
             <button onClick={deleteBoard}>삭제</button>
-          </>
+          </div>
         ) : (
           <></>
         )}

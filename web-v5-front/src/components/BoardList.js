@@ -17,7 +17,7 @@ function BoardList() {
     })
       .then((res) => res.json())
       .then((newData) => {
-        console.log(newData);
+        // console.log(newData);
         if (newData === "err") {
           window.location.href = "/login";
         }

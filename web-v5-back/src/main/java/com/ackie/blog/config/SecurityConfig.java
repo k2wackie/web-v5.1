@@ -5,7 +5,6 @@ import com.ackie.blog.config.auth.PrincipalDetailService;
 import com.ackie.blog.config.jwt.JwtAuthenticationFilter;
 import com.ackie.blog.config.jwt.JwtAuthorizationFilter;
 import com.ackie.blog.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -57,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/", "/login", "/api/user/register", "/logout").permitAll()
             .antMatchers(HttpMethod.GET,"/api/board/**", "/api/user/**")
             .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
-            .antMatchers(HttpMethod.POST,"/api/board/**", "/api/user/**")
+            .antMatchers(HttpMethod.POST,"/api/board/**", "/api/user/**"," /api/board/**/reply")
             .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
             .antMatchers(HttpMethod.PUT,"/api/board/**","/api/board/**", "/api/user/**")
             .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")

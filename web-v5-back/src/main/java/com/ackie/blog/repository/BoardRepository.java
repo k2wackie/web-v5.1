@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    @Transactional
+
     List<Board> findByIsdeleted(Boolean isdeleted);
 }

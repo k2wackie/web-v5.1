@@ -12,9 +12,9 @@ import java.util.List;
 
 @Entity(name = "user")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder // 빌더패턴
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@Builder // 빌더패턴
 @DynamicInsert
 @DynamicUpdate
 public class User {

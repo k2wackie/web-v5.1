@@ -4,13 +4,15 @@ import com.ackie.blog.model.Reply;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public interface ReplyRepository extends JpaRepository<Reply, Integer> {
 
     @Modifying
-    @Query(value="INSERT INTO blog.reply(userId, boardId, content, createDate) VALUES(?1,?2,?3,now())", nativeQuery = true)
-    int mSave(int userId, int boardId, String content);
+    @Transactional
+    @Query(value="INSERT INTO blog.reply(user_id, board_id, content, create_date_time) VALUES(?1,?2,?3,now())", nativeQuery = true)
+    Integer replySave(Long userId, Long boardId, String content);
 
 
 }

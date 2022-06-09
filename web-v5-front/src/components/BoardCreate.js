@@ -5,9 +5,6 @@ function BoardCreate() {
   const navigate = useNavigate();
 
   const [data, setData] = useState({
-    user: {
-      username: "ackie",
-    },
     title: "",
     content: "",
   });

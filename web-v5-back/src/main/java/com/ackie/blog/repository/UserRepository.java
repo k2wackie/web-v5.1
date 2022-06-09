@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = { "boards" })
     List<User> findAll();
-    @Transactional
+
     User findByUsername(String username);
 
 }

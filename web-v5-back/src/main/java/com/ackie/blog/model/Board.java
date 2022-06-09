@@ -36,12 +36,7 @@ public class Board {
     @JoinColumn(name = "user_id")
     private User user;
 
-
-//    @JsonIgnoreProperties({"board"})
-//    @OrderBy("id desc")
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "board", cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
 //    @JsonIgnore
     private List<Reply> replies = new ArrayList<>();
 }

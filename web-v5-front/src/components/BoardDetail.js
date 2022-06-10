@@ -5,16 +5,20 @@ import jwt_decode from "jwt-decode";
 function BoardDetail() {
   const [data, setData] = useState([]);
   const [reply, setReply] = useState([]);
-  const [mode, setMode] = useState("read");
+  const [modeBoard, setModeBoard] = useState("read");
   const [isUser, setIsUser] = useState("notUser");
+  const [loginUser, setLoginUser] = useState("");
   const [newReply, setNewReply] = useState({ content: "" });
-  const [updata, setUpdate] = useState();
+  const [editReply, setEditReply] = useState({ content: "" });
+  const [modeRelpy, setModeReply] = useState("read");
+  const [update, setUpdate] = useState();
 
   const navigate = useNavigate();
 
   const id = useParams().id;
 
-  const username = data.user === undefined || null ? "" : data.user.username;
+  const boardUsername =
+    data.user === undefined || null ? "null" : data.user.username;
 
   useEffect(() => {
     fetch(`/api/board/${id}`, {
@@ -29,26 +33,26 @@ function BoardDetail() {
           window.location.href = "/login";
         }
         setData(newData);
-        setReply(newData.replies);
+        // setReply(newData.replies);
       });
-  }, [id, updata]);
+  }, [id, update]);
 
   useEffect(() => {
     const jwtHeader = window.localStorage.getItem("Authorization");
     // console.log(jwtHeader);
     const decodeUser = jwt_decode(jwtHeader);
     // console.log("decodeUser: ", decodeUser.username);
-
-    if (decodeUser.username === username || decodeUser.username === "admin") {
+    setLoginUser(decodeUser.username);
+    if (loginUser === boardUsername || loginUser === "admin") {
       setIsUser("isUser");
     }
-  }, [username]);
+  }, [loginUser, boardUsername]);
 
-  const modeChange = (e) => {
+  const modeEditBoard = (e) => {
     e.preventDefault();
-    if (mode === "read") {
-      setMode("write");
-    } else if (mode === "write") {
+    if (modeBoard === "read") {
+      setModeBoard("write");
+    } else if (modeBoard === "write") {
       fetch(`/api/board/${id}`, {
         method: "PUT",
         headers: {
@@ -60,7 +64,7 @@ function BoardDetail() {
         .then((res) => console.log("status: ", res.status))
         .then(() => {
           navigate("/board");
-          setMode("read");
+          setModeBoard("read");
         })
         .catch((err) => console.log(err));
     }
@@ -91,6 +95,26 @@ function BoardDetail() {
       .catch((err) => console.log(err));
   };
 
+  //------------------reply----------------------------------------------------------------------------------------
+  //------------------reply----------------------------------------------------------------------------------------
+  //------------------reply----------------------------------------------------------------------------------------
+
+  useEffect(() => {
+    fetch(`/api/board/${id}/reply`, {
+      method: "GET",
+      headers: {
+        Authorization: localStorage.getItem("Authorization"),
+      },
+    })
+      .then((res) => res.json())
+      .then((newData) => {
+        if (newData === "err") {
+          window.location.href = "/login";
+        }
+        setReply(newData);
+      });
+  }, [id, update]);
+
   const replyOnChange = (e) => {
     setNewReply({ [e.target.name]: e.target.value });
   };
@@ -111,14 +135,71 @@ function BoardDetail() {
         res.json();
       })
       .then((res) => {
-        console.log(reply);
+        // console.log(reply);
         setNewReply({ content: "" });
-        console.log(newReply);
+        // console.log(newReply);
         setUpdate((n) => !n);
         navigate(`/board/${id}`);
       })
       .catch((err) => console.log(err));
-    // navigate(`/board/${id}`);
+  };
+
+  const editReplyOnChange = (e) => {
+    setEditReply({ [e.target.name]: e.target.value });
+  };
+
+  const modeEditReply = (e) => {
+    editReply.id = parseInt(e.target.value);
+    if (modeRelpy === "read") {
+      // console.log(e.target.value);
+      // console.log(reply.find((r) => r.id === parseInt(e.target.value)).content);
+      setModeReply(`write_${e.target.value}`);
+    } else {
+      fetch(`/api/board/${id}/reply`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("Authorization"),
+        },
+        body: JSON.stringify(editReply),
+      })
+        .then((res) => {
+          console.log("status: ", res.status);
+          res.json();
+        })
+        .then((res) => {
+          setEditReply({ content: "" });
+          setModeReply("read");
+          setUpdate((n) => !n);
+          navigate(`/board/${id}`);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  const delReply = (e) => {
+    e.preventDefault();
+
+    console.log(e.target.value);
+
+    const delReply = {
+      id: e.target.value,
+    };
+
+    fetch("/api/reply/delete", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("Authorization"),
+      },
+      body: JSON.stringify(delReply),
+    })
+      .then((res) => console.log("status: ", res.status))
+      .then(() => {
+        setUpdate((n) => !n);
+        navigate(`/board/${id}`);
+      })
+      .catch((err) => console.log(err));
   };
 
   const date = new Date(data.updateDateTime);
@@ -128,20 +209,22 @@ function BoardDetail() {
   const hours = date.getHours();
   const minutes = date.getMinutes();
 
+  // console.log(reply);
+
   return (
     <div>
       <div className="board-item">
-        {mode === "read" ? (
+        {modeBoard === "read" ? (
           <>
             <div>글 id: {data.id}</div>
-            <div>작성자: {username}</div>
+            <div>작성자: {boardUsername}</div>
             <div>제목: {data.title}</div>
             <div>내용: {data.content}</div>
             <div>
               작성시간: {year}년 {month}월 {day}일 {hours}시 {minutes}분
             </div>
             <div>
-              댓글:
+              댓글------------------------------------
               <div>
                 {reply.length === 0
                   ? ""
@@ -149,20 +232,53 @@ function BoardDetail() {
                       <div key={i}>
                         <div>이름: {data.user.username}</div>
                         <div>{data.content}</div>
+                        {modeRelpy === `write_${data.id}` ? (
+                          <input
+                            type="text"
+                            name="content"
+                            onChange={editReplyOnChange}
+                          ></input>
+                        ) : (
+                          ""
+                        )}
+
+                        <div>
+                          {loginUser === data.user.username ||
+                          loginUser === "admin" ? (
+                            <>
+                              <button
+                                name="id"
+                                value={data.id}
+                                onClick={modeEditReply}
+                              >
+                                수정
+                              </button>
+                              <button value={data.id} onClick={delReply}>
+                                삭제
+                              </button>
+                            </>
+                          ) : (
+                            ""
+                          )}
+                        </div>
                       </div>
                     ))}
               </div>
             </div>
             <br />
-            <div>
-              <input
-                type="text"
-                value={newReply.content}
-                name="content"
-                onChange={replyOnChange}
-              />
-              <button onClick={replySave}>댓글저장</button>
-            </div>
+            {modeRelpy === "read" ? (
+              <div>
+                <input
+                  type="text"
+                  value={newReply.content}
+                  name="content"
+                  onChange={replyOnChange}
+                />
+                <button onClick={replySave}>댓글저장</button>
+              </div>
+            ) : (
+              ""
+            )}
           </>
         ) : (
           <>
@@ -191,8 +307,8 @@ function BoardDetail() {
 
         {isUser === "isUser" ? (
           <div>
-            <button onClick={modeChange}>수정</button>
-            <button onClick={deleteBoard}>삭제</button>
+            <button onClick={modeEditBoard}>글수정</button>
+            <button onClick={deleteBoard}>글삭제</button>
           </div>
         ) : (
           <></>

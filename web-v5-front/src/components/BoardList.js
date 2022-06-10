@@ -26,15 +26,20 @@ function BoardList() {
       .catch((err) => console.log(err));
   }, [navigate]);
 
+  // console.log(data[12] === null || data[12] === undefined);
   return (
     <div>
       <Link to="/board/create">새 글 생성</Link>
 
       <br />
       <br />
-      {data.map((it) => (
-        <BoardItem key={it.id} {...it} />
-      ))}
+      {data.map((data) =>
+        data === null || data === undefined ? (
+          ""
+        ) : (
+          <BoardItem key={data.id} {...data} />
+        )
+      )}
     </div>
   );
 }

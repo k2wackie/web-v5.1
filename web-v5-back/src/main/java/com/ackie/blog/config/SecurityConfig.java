@@ -58,9 +58,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
             .antMatchers(HttpMethod.POST,"/api/board/**", "/api/user/**"," /api/board/**/reply")
             .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
-            .antMatchers(HttpMethod.PUT,"/api/board/**","/api/board/**", "/api/user/**")
+            .antMatchers(HttpMethod.PUT,"/api/board/**","/api/board/**", "/api/user/**", "/api/reply/delete")
             .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
-            .antMatchers(HttpMethod.DELETE, "/api/board/**", "/api/user/**")
+            .antMatchers(HttpMethod.DELETE, "/api/board/**", "/api/user/**", "/api/reply/delete")
             .access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
             .anyRequest().permitAll();
     }

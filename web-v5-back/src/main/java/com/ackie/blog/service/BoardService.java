@@ -21,6 +21,9 @@ public class BoardService {
     public List<Board> findAll() {
         return boardRepository.findByIsdeleted(false);
     }
+//    public List<Board> findAll() {
+//        return boardRepository.findNotDeleted();
+//    }
 
     public Board save(Board newboard, String username) {
         User user = userRepository.findByUsername(username);

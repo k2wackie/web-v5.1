@@ -37,6 +37,6 @@ public class Board {
     private User user;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-//    @JsonIgnore
+    @JsonIgnore
     private List<Reply> replies = new ArrayList<>();
 }
